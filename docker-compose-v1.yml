@@ -17,7 +17,7 @@ services:
     container_name: ngrok
     restart: unless-stopped
     environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:?NGROK_AUTHTOKEN must be set in .env}
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
     command:
       - http
       - --log=stdout
