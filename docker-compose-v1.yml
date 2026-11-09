@@ -1,0 +1,38 @@
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk21
+    container_name: jenkins
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - ci-network
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    restart: unless-stopped
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:?NGROK_AUTHTOKEN must be set in .env}
+    command:
+      - http
+      - --log=stdout
+      - --log-level=debug
+      - http://jenkins:8080
+    ports:
+      - "4040:4040"
+    depends_on:
+      - jenkins
+    networks:
+      - ci-network
+
+volumes:
+  jenkins_home:
+
+networks:
+  ci-network:
+    driver: bridge
